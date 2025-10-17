@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>El Relojero - Hora del Servidor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: #1a0a2a;
+      color: #ff66cc;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .reloj {
+      font-size: 4rem;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ff66cc;
+      background: rgba(10, 0, 30, 0.7);
+      padding: 20px 40px;
+      border-radius: 15px;
+      border: 2px solid #ff33aa;
+      margin: 20px 0;
+    }
+    .loading { color: #ff99cc; }
+    .error { color: #ff5555; }
+  </style>
+</head>
+<body>
+  <div class="reloj" id="hora-servidor">Cargando...</div>
+  <div id="zona" style="color: #ccc; margin-top: 10px;"></div>
+  <div class="mensaje">🌐 Hora del servidor (no de tu dispositivo)</div>
+
+  <script>
+    const API_URL = 'https://elrelojero.vercel.app/api/hora'; // ← Tu URL real
+
+    async function obtenerHoraServidor() {
+      try {
+        const respuesta = await fetch(API_URL);
+        if (!respuesta.ok) throw new Error('API no disponible');
+        const datos = await respuesta.json();
+        
+        document.getElementById('hora-servidor').textContent = datos.hora_local_servidor;
+        document.getElementById('zona').textContent = `Zona: ${datos.zona_horaria}`;
+      } catch (err) {
+        document.getElementById('hora-servidor').textContent = '❌ Error';
+        console.error(err);
+      }
+    }
+
+    // Actualizar cada 2 segundos
+    setInterval(obtenerHoraServidor, 2000);
+    obtenerHoraServidor();
+  </script>
+</body>
+</html>
